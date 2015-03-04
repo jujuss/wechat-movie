@@ -1,2 +1,2 @@
 # wechat-movie
-Movie clients based on wechat
+Movie client based on wechat
