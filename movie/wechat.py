@@ -3,6 +3,8 @@
 from flask import request,make_response
 
 from movie import app
+import msg_text
+import msg_event
 import config
 import hashlib
 try:
@@ -21,7 +23,15 @@ def wechat():
             return make_response(request.args.get('echostr',''))
         elif request.method == 'POST':
             app.logger.info(request.data)
-            return make_response(request.data)
+            msg = parse_request_xml(request.data)
+            msg_type = msg.get('MsgType')
+            msg_action = {
+                 "text": msg_text.TextMsg,
+                 'event': msg_event.EventMsg,
+            }
+            resp_msg = msg_action[msg_type](msg).handle()
+            app.logger.info(resp_msg)
+            return make_response(resp_msg)
     else:
         return make_response('hello, weixin')
 
