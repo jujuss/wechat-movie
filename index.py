@@ -9,7 +9,7 @@ def main():
     settings = {
     "host": config.server_host,
     "port": config.server_port,
-    "debug": False,
+    "debug": True,
     }
     app.run(**settings)
 
