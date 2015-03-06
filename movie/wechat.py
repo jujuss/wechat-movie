@@ -26,7 +26,7 @@ def wechat():
         return make_response('hello, weixin')
 
 
-def checkSignature():
+def checkSignature(signature,nonce,timestamp):
         tmp_list = [config.token,timestamp,nonce]
         tmp_list.sort()
         sha1 = hashlib.sha1()
