@@ -25,3 +25,21 @@ TextTpl = '''<xml>
                 <MsgType><![CDATA[text]]></MsgType>
                 <Content><![CDATA[%s]]></Content>
                 </xml>'''
+
+MultiTextTpl = '''<xml>
+                    <ToUserName><![CDATA[%s]]></ToUserName>
+                    <FromUserName><![CDATA[%s]]></FromUserName>
+                    <CreateTime>%d</CreateTime>
+                    <MsgType><![CDATA[news]]></MsgType>
+                    <ArticleCount>%d</ArticleCount>
+                    <Articles>
+                    %s
+                    </Articles>
+                    </xml>'''
+
+MultiItemTpl = '''<item>
+                    <Title><![CDATA[%s]]></Title>
+                    <Description><![CDATA[%s]]></Description>
+                    <PicUrl><![CDATA[%s]]></PicUrl>
+                    <Url><![CDATA[%s]]></Url>
+                    </item>'''

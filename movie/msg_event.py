@@ -3,6 +3,7 @@
 import config
 import time
 import redis
+import random
 
 class EventMsg(object):
     def __init__(self,msg):
@@ -27,6 +28,11 @@ class EventMsg(object):
 
          if resp_msg_type == 'text':
             return config.TextTpl % (self.from_user,self.to_user,curr_timestamp,resp_msg)
+         elif resp_msg_type == 'multitext':
+            items = ''
+            for content in resp_msg:
+                items += config.MultiItemTpl % (content['title'],content['description'],content['picurl'],content['url'])
+            return config.MultiTextTpl % (self.from_user, self.to_user, curr_timestamp, len(resp_msg), items)
 
     def Subscribe(self):
         return ('欢迎关注FindMe，在这里你可以找到最新最热的电影，祝你玩的愉快','text')
@@ -42,9 +48,15 @@ class EventMsg(object):
         if event_key == 'M_NOWPLAYING':
             r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
             curr_date = int(time.strftime('%Y%m%d'))
+            movies = []
             for mid in r_conn.zrangebyscore("nowplaying", curr_date, curr_date):
                 minfo = r_conn.hgetall("now:movie:%s" % mid)
-                print minfo
+                movies.append(minfo)
+
+            res = []
+            for movie in random.sample(movies, 5):
+                res.append({"title": '%s %s' % (movie['title'],movie['score']), "description":"", "picurl": movie["pic"], "url": movie['description']})
+            return (res,'multitext')
         elif event_key == 'M_UPCOMING':
             pass
 
