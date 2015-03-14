@@ -1,0 +1,14 @@
+{
+    "button": [
+    {
+        "type": "click",
+        "name": "正在热映",
+        "key": "M_NOWPLAYING"
+    },
+    {
+        "type": "click",
+        "name": "即将上映",
+        "key": "M_UPCOMING"
+    }
+    ]
+}
