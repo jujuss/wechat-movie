@@ -46,32 +46,38 @@ class EventMsg(object):
     def Click(self):
         event_key = self.msg.get('EventKey','')
         if event_key == 'M_NOWPLAYING':
-            r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
-            curr_date = int(time.strftime('%Y%m%d'))
-            movies = []
-            for mid in r_conn.zrangebyscore("nowplaying", curr_date, curr_date):
-                minfo = r_conn.hgetall("now:movie:%s" % mid)
-                movies.append(minfo)
-
-            res = []
-            for movie in random.sample(movies, 5):
-                res.append({"title": '%s %s' % (movie['title'],movie['score']), "description":"", "picurl": movie["pic"], "url": movie['description']})
-            return (res,'multitext')
+            return self._handle_click_nowplaying()
         elif event_key == 'M_UPCOMING':
-            r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
-            curr_date = int(time.strftime('%Y%m%d'))
-            movies = []
-            for mid in r_conn.zrangebyscore("upcoming", curr_date, curr_date):
-                minfo = r_conn.hgetall("coming:movie:%s" % mid)
-                movies.append(minfo)
-
-            res = []
-            for movie in random.sample(movies, 3):
-                res.append({"title": '%s %s上映' % (movie['title'],movie['release_date']), "description":"", "picurl": movie["pic"], "url": movie['description']})
-            return (res,'multitext')
+            return self._handle_click_upcoming()
 
     def View(self):
         pass
 
     def Location(self):
         pass
+
+    def _handle_click_upcoming(self):
+        r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
+        curr_date = int(time.strftime('%Y%m%d'))
+        movies = []
+        for mid in r_conn.zrangebyscore("upcoming", curr_date, curr_date):
+            minfo = r_conn.hgetall("coming:movie:%s" % mid)
+            movies.append(minfo)
+
+        res = []
+        for movie in random.sample(movies, 3):
+            res.append({"title": '%s %s上映' % (movie['title'],movie['release_date']), "description":"", "picurl": movie["pic"], "url": movie['description']})
+        return (res,'multitext')
+
+    def _handle_click_nowplaying(self):
+        r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
+        curr_date = int(time.strftime('%Y%m%d'))
+        movies = []
+        for mid in r_conn.zrangebyscore("nowplaying", curr_date, curr_date):
+            minfo = r_conn.hgetall("now:movie:%s" % mid)
+            movies.append(minfo)
+
+        res = []
+        for movie in random.sample(movies, 5):
+            res.append({"title": '%s %s' % (movie['title'],movie['score']), "description":"", "picurl": movie["pic"], "url": movie['description']})
+        return (res,'multitext')
