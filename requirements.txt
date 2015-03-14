@@ -1,0 +1,4 @@
+flask==0.10.1
+redis==2.10.3
+beautifulsoup4==4.3.2
+pycurl==7.19.5.1
