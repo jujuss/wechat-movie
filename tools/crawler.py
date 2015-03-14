@@ -49,7 +49,7 @@ class Crawler(object):
             m_description = 'http://movie.douban.com/subject/%s/' % m_douban_id
             m_pic = m_node.find_all('img')[0]['src']
 
-            self.redis.zadd('nowplaying', int(curr_date), m_douban_id)
+            self.redis.zadd('nowplaying', m_douban_id, int(curr_date))
             movie_info = {'title': m_title, 'score': m_score,
                           'description': m_description, 'pic': m_pic}
             self.redis.hmset('now:movie:%s' % m_douban_id, movie_info)
