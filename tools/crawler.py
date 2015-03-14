@@ -66,7 +66,7 @@ class Crawler(object):
             m_pic = m_node.find_all('img')[0]['src']
             m_release_date = (m_node.find_all('li', 'release-date')[0]
                               .stripped_strings.next())[:-2]
-            self.redis.zadd('upcoming', int(curr_date), m_douban_id)
+            self.redis.zadd('upcoming', m_douban_id, int(curr_date))
             movie_info = {'title': m_title, 'release_date': m_release_date,
                           'description': m_description, 'pic': m_pic}
             self.redis.hmset('coming:movie:%s' % m_douban_id, movie_info)
