@@ -2,6 +2,7 @@
 
 import config
 import time
+import redis
 
 class EventMsg(object):
     def __init__(self,msg):
@@ -37,7 +38,15 @@ class EventMsg(object):
         pass
 
     def Click(self):
-        pass
+        event_key = self.msg.get('EventKey','')
+        if event_key == 'M_NOWPLAYING':
+            r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
+            curr_date = int(time.strftime('%Y%m%d'))
+            for mid in r_conn.zrangebyscore("nowplaying", curr_date, curr_date):
+                minfo = r_conn.hgetall("now:movie:%s" % mid)
+                print minfo
+        elif event_key == 'M_UPCOMING':
+            pass
 
     def View(self):
         pass
