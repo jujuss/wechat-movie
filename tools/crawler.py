@@ -46,7 +46,8 @@ class Crawler(object):
             m_douban_id = m_node['id']
             m_title = m_node['data-title']
             m_score = m_node['data-score']
-            m_description = 'http://movie.douban.com/subject/%s/' % m_douban_id
+            # m_description = 'http://movie.douban.com/subject/%s/' % m_douban_id
+            m_description = config.server_domain + "/movie/subject/%s" % m_douban_id
             m_pic = m_node.find_all('img')[0]['src']
 
             self.redis.zadd('nowplaying', m_douban_id, int(curr_date))
@@ -62,7 +63,7 @@ class Crawler(object):
         for m_node in upcoming_node.find_all('li', id=re.compile(r'\d+')):
             m_douban_id = m_node['id']
             m_title = m_node['data-title']
-            m_description = 'http://movie.douban.com/subject/%s/' % m_douban_id
+            m_description = config.server_domain+'/movie/subject/%s/' % m_douban_id
             m_pic = m_node.find_all('img')[0]['src']
             m_release_date = (m_node.find_all('li', 'release-date')[0]
                               .stripped_strings.next())[:-2]
