@@ -16,6 +16,7 @@ class CurlHelper(object):
             self.curl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4")
         else:
             self.curl.setopt(pycurl.USERAGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36")
+        self.curl.setopt(pycurl.REFERER, '')
 
     def get(self,url,params=None):
         if params:
