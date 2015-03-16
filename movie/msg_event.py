@@ -11,6 +11,9 @@ class EventMsg(object):
         self.event = msg.get("Event")
         self.to_user = msg.get("ToUserName")
         self.from_user = msg.get("FromUserName")
+        self.redis = redis.Redis(host=config.redis_host,
+                                 port=config.redis_port,
+                                 db=config.redis_db)
 
 
     def handle(self):
@@ -35,6 +38,10 @@ class EventMsg(object):
             return config.MultiTextTpl % (self.from_user, self.to_user, curr_timestamp, len(resp_msg), items)
 
     def Subscribe(self):
+        # 用户注册
+        uid = self.redis.incr('uid')
+        self.redis.hset('user:%d' % uid, 'wx_openid', self.from_user)
+        self.redis.hset('wx:%s' % self.from_user, 'uid', uid)
         return ('欢迎关注FindMe，在这里你可以找到最新最热的电影，祝你玩的愉快','text')
 
     def  UnSubscribe(self):
@@ -54,14 +61,18 @@ class EventMsg(object):
         pass
 
     def Location(self):
-        pass
+        uid = self.redis.hget('wx:%s' % self.from_user, 'uid')
+        loaction_lat = self.msg.get('Latitude','')
+        location_long = self.msg.get('Longitude','')
+
+        self.redis.hset('user:%d' % int(uid), 'latitude', loaction_lat)
+        self.redis.hset('user:%d' % int(uid), 'longitude', location_long)
 
     def _handle_click_upcoming(self):
-        r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
         curr_date = int(time.strftime('%Y%m%d'))
         movies = []
-        for mid in r_conn.zrangebyscore("upcoming", curr_date, curr_date):
-            minfo = r_conn.hgetall("coming:movie:%s" % mid)
+        for mid in self.redis.zrangebyscore("upcoming", curr_date, curr_date):
+            minfo = self.redis.hgetall("coming:movie:%s" % mid)
             movies.append(minfo)
 
         res = []
@@ -70,11 +81,10 @@ class EventMsg(object):
         return (res,'multitext')
 
     def _handle_click_nowplaying(self):
-        r_conn = redis.Redis(host=config.redis_host, port=config.redis_port, db=config.redis_db)
         curr_date = int(time.strftime('%Y%m%d'))
         movies = []
-        for mid in r_conn.zrangebyscore("nowplaying", curr_date, curr_date):
-            minfo = r_conn.hgetall("now:movie:%s" % mid)
+        for mid in self.redis.zrangebyscore("nowplaying", curr_date, curr_date):
+            minfo = self.redis.hgetall("now:movie:%s" % mid)
             movies.append(minfo)
 
         res = []
