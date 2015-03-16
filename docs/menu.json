@@ -9,6 +9,11 @@
         "type": "click",
         "name": "即将上映",
         "key": "M_UPCOMING"
+    },
+    {
+        "type": "click",
+        "name": "周边信息",
+        "key": "M_LOCATION"
     }
     ]
 }

@@ -20,7 +20,9 @@ redis_host = '127.0.0.1'
 redis_port = 6379
 redis_db = 1
 
-
+# baidu_dev config
+baidu_ack = '5aa13dd85f1ce1fab33ace6e9cb1be39'
+baidu_map_geoconv_api = 'http://api.map.baidu.com/geoconv/v1/'
 
 # response_msg tpl
 TextTpl = '''<xml>

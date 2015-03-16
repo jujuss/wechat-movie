@@ -1,9 +1,12 @@
 # coding:utf-8
 
-import config
 import time
 import redis
 import random
+import json
+
+import config
+from libs import mcurl
 
 class EventMsg(object):
     def __init__(self,msg):
@@ -58,6 +61,8 @@ class EventMsg(object):
             return self._handle_click_nowplaying()
         elif event_key == 'M_UPCOMING':
             return self._handle_click_upcoming()
+        elif event_key == 'M_LOCATION':
+            return self._handle_click_location()
 
     def View(self):
         pass
@@ -71,6 +76,25 @@ class EventMsg(object):
         self.redis.hset('user:%d' % int(uid), 'longitude', location_long)
 
         return ('','')
+
+    def _handle_click_location(self):
+        uid = int(self.redis.hget('wx:%s' % self.from_user, 'uid'))
+        curr_long = self.redis.hget('user:%d' % uid, 'longitude')
+        curr_lat = self.redis.hget('user:%d' % uid, 'latitude')
+
+        geoconv_url = '%s?ack=%s&coords=%s&output=%s' % (config.baidu_map_geoconv_api,config.baidu_ack,'%s,%s' %(curr_long,curr_lat), 'json')
+        geoconv_res = json.loads(mcurl.CurlHelper().get(geoconv_url))
+
+        if geoconv_res['status'] == 0:
+            baidu_location = geoconv_res['result'][0]
+
+        if baidu_location is not None:
+            baidu_map_long = baidu_location['x']
+            baidu_map_lat = baidu_location['y']
+
+            return ('经度: %s, 纬度: %s' % (baidu_map_long, baidu_map_lat, ),'text')
+        else:
+            return ('为获取到用户地理位置信息，请重试','text')
 
     def _handle_click_upcoming(self):
         curr_date = int(time.strftime('%Y%m%d'))
