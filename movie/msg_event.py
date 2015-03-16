@@ -36,6 +36,8 @@ class EventMsg(object):
             for content in resp_msg:
                 items += config.MultiItemTpl % (content['title'],content['description'],content['picurl'],content['url'])
             return config.MultiTextTpl % (self.from_user, self.to_user, curr_timestamp, len(resp_msg), items)
+         else:
+            return 'hello, world'
 
     def Subscribe(self):
         # 用户注册
