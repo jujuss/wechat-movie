@@ -7,6 +7,7 @@ import json
 
 import config
 from libs import mcurl
+from . import app
 
 class EventMsg(object):
     def __init__(self,msg):
@@ -94,7 +95,7 @@ class EventMsg(object):
 
             place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%s&output=%s' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), '3000', 'json')
             search_result = json.loads(mcurl.CurlHelper().get(place_search_url))
-            print search_result
+            app.logger.info(search_result)
 
             return ('经度: %s, 纬度: %s' % (baidu_map_long, baidu_map_lat, ),'text')
         else:
