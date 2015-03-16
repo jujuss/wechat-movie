@@ -68,6 +68,8 @@ class EventMsg(object):
         self.redis.hset('user:%d' % int(uid), 'latitude', loaction_lat)
         self.redis.hset('user:%d' % int(uid), 'longitude', location_long)
 
+        return ('','')
+
     def _handle_click_upcoming(self):
         curr_date = int(time.strftime('%Y%m%d'))
         movies = []
