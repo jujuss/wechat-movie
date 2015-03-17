@@ -93,7 +93,7 @@ class EventMsg(object):
             baidu_map_long = baidu_location['x']
             baidu_map_lat = baidu_location['y']
 
-            place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%s&output=%s&scope=%s' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), '3000', 'json', '2')
+            place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2')
             search_result = json.loads(mcurl.CurlHelper().get(place_search_url))
             #app.logger.info(search_result) # 电影院信息
 
