@@ -25,6 +25,11 @@ baidu_ak = '5aa13dd85f1ce1fab33ace6e9cb1be39'
 baidu_map_geoconv_api = 'http://api.map.baidu.com/geoconv/v1/'
 baidu_map_place_api = 'http://api.map.baidu.com/place/v2/search'
 baidu_map_radius = 5000
+baidu_map_page_size = 5
+
+# camera_pic list
+cinema_pic_domain = 'http://7u2j19.com1.z0.glb.clouddn.com'
+cinema_pics = ['%s/%s_%d.jpg' % (cinema_pic_domain, 'cinema', x) for x in range(1, 21)]
 
 # response_msg tpl
 TextTpl = '''<xml>
