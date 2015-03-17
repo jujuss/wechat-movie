@@ -25,11 +25,11 @@ def wechat():
             app.logger.info(request.data)
             msg = parse_request_xml(request.data)
             msg_type = msg.get('MsgType')
-            msg_action = {
+            msg_cls = {
                  "text": msg_text.TextMsg,
                  'event': msg_event.EventMsg,
             }
-            resp_msg = msg_action[msg_type](msg).handle()
+            resp_msg = msg_cls[msg_type](msg).handle()
             app.logger.info(resp_msg)
             return make_response(resp_msg)
     else:
