@@ -93,17 +93,19 @@ class EventMsg(object):
             baidu_map_long = baidu_location['x']
             baidu_map_lat = baidu_location['y']
 
-            place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2')
+            place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s&page_size=%d' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2', config.baidu_map_page_size)
             search_result = json.loads(mcurl.CurlHelper().get(place_search_url))
-            #app.logger.info(search_result) # 电影院信息
 
             if search_result['status'] == 0:
                 movies = search_result['results']
                 res = []
+                cinema_pic_urls = random.sample(config.cinema_pics, 5)
+                index = 0
                 for movie in movies:
                     res.append({'title': "%s" % ( movie['name'],),
-                                'description':'','picurl':'',
+                                'description':'','picurl': cinema_pic_urls[index],
                                 'url':movie['detail_info']['detail_url']})
+                    index += 1
                 return (res,'multitext')
 
             return ('经度: %s, 纬度: %s' % (baidu_map_long, baidu_map_lat, ),'text')
