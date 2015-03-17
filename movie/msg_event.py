@@ -103,7 +103,7 @@ class EventMsg(object):
                 for movie in movies:
                     res.append({'title': "%s" % ( movie['name'],),
                                 'description':'','picurl':'',
-                                'url':movie[detail_info]['detail_url']})
+                                'url':movie['detail_info']['detail_url']})
                 return (res,'multitext')
 
             return ('经度: %s, 纬度: %s' % (baidu_map_long, baidu_map_lat, ),'text')
