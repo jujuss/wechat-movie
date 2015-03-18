@@ -104,7 +104,7 @@ class EventMsg(object):
                 for movie in movies:
                     res.append({'title': "%s" % ( movie['name'],),
                                 'description':'','picurl': cinema_pic_urls[index],
-                                'url':movie['detail_info']['detail_url']})
+                                'url':movie['detail_info'].get('deatil_url','')})
                     index += 1
                 return (res,'multitext')
 
