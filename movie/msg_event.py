@@ -18,6 +18,7 @@ class EventMsg(object):
         self.redis = redis.Redis(host=config.redis_host,
                                  port=config.redis_port,
                                  db=config.redis_db)
+        self.curl = mcurl.CurlHelper()
 
 
     def handle(self):
@@ -69,48 +70,48 @@ class EventMsg(object):
         pass
 
     def Location(self):
-        uid = self.redis.hget('wx:%s' % self.from_user, 'uid')
+        uid = int(self.redis.hget('wx:%s' % self.from_user, 'uid'))
         loaction_lat = self.msg.get('Latitude','')
         location_long = self.msg.get('Longitude','')
 
-        self.redis.hset('user:%d' % int(uid), 'latitude', loaction_lat)
-        self.redis.hset('user:%d' % int(uid), 'longitude', location_long)
+        geoconv_url = '%s?ak=%s&coords=%s&output=%s' % (config.baidu_map_geoconv_api,config.baidu_ak,'%s,%s' %(curr_long,curr_lat), 'json')
+        geoconv_res = json.loads(self.curl.get(geoconv_url))
+
+        if geoconv_res['status'] == 0:
+            baidu_location = geoconv_res['result'][0]
+            self.redis.hset('user:%d' % uid, 'baidu_latitude', baidu_location.get('y',''))
+            self.redis.hset('user:%d' % uid, 'baidu_longitude', baidu_location.get('x',''))
+        else:
+            self.redis.hset('user:%d' % uid, 'baidu_latitude', loaction_lat)
+            self.redis.hset('user:%d' % uid, 'baidu_longitude', location_long)
+
+        self.redis.hset('user:%d' % uid, 'latitude', loaction_lat)
+        self.redis.hset('user:%d' % uid, 'longitude', location_long)
 
         return ('','')
 
     def _handle_click_location(self):
         uid = int(self.redis.hget('wx:%s' % self.from_user, 'uid'))
-        curr_long = self.redis.hget('user:%d' % uid, 'longitude')
-        curr_lat = self.redis.hget('user:%d' % uid, 'latitude')
+        baidu_map_long = self.redis.hget('user:%d' % uid, 'baidu_longitude')
+        baidu_map_lat = self.redis.hget('user:%d' % uid, 'baidu_latitude')
 
-        geoconv_url = '%s?ak=%s&coords=%s&output=%s' % (config.baidu_map_geoconv_api,config.baidu_ak,'%s,%s' %(curr_long,curr_lat), 'json')
-        geoconv_res = json.loads(mcurl.CurlHelper().get(geoconv_url))
 
-        if geoconv_res['status'] == 0:
-            baidu_location = geoconv_res['result'][0]
+        place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s&page_size=%d' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2', config.baidu_map_page_size)
+        search_result = json.loads(mcurl.CurlHelper().get(place_search_url))
 
-        if baidu_location is not None:
-            baidu_map_long = baidu_location['x']
-            baidu_map_lat = baidu_location['y']
-
-            place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s&page_size=%d' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2', config.baidu_map_page_size)
-            search_result = json.loads(mcurl.CurlHelper().get(place_search_url))
-
-            if search_result['status'] == 0:
-                movies = search_result['results']
-                res = []
-                cinema_pic_urls = random.sample(config.cinema_pics, 5)
-                index = 0
-                for movie in movies:
-                    res.append({'title': "%s" % ( movie['name'],),
-                                'description':'','picurl': cinema_pic_urls[index],
-                                'url':movie['detail_info'].get('deatil_url','')})
-                    index += 1
-                return (res,'multitext')
-
-            return ('经度: %s, 纬度: %s' % (baidu_map_long, baidu_map_lat, ),'text')
+        if search_result['status'] == 0:
+            movies = search_result['results']
+            res = []
+            cinema_pic_urls = random.sample(config.cinema_pics, 5)
+            index = 0
+            for movie in movies:
+                res.append({'title': "%s" % ( movie['name'],),
+                            'description':'','picurl': cinema_pic_urls[index],
+                            'url':movie['detail_info'].get('deatil_url','')})
+                index += 1
+            return (res,'multitext')
         else:
-            return ('为获取到用户地理位置信息，请重试','text')
+            return ('经度: %s, 纬度: %s 未获取到周边信息' % (baidu_map_long, baidu_map_lat, ),'text')
 
     def _handle_click_upcoming(self):
         curr_date = int(time.strftime('%Y%m%d'))
