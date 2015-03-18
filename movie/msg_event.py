@@ -97,7 +97,8 @@ class EventMsg(object):
 
 
         place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s&page_size=%d' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2', config.baidu_map_page_size)
-        search_result = json.loads(mcurl.CurlHelper().get(place_search_url))
+        app.logger.info(place_search_url)
+        search_result = json.loads(self.curl.get(place_search_url))
 
         if search_result['status'] == 0:
             movies = search_result['results']
