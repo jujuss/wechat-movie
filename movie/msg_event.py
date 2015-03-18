@@ -74,7 +74,7 @@ class EventMsg(object):
         loaction_lat = self.msg.get('Latitude','')
         location_long = self.msg.get('Longitude','')
 
-        geoconv_url = '%s?ak=%s&coords=%s&output=%s' % (config.baidu_map_geoconv_api,config.baidu_ak,'%s,%s' %(curr_long,curr_lat), 'json')
+        geoconv_url = '%s?ak=%s&coords=%s&output=%s' % (config.baidu_map_geoconv_api,config.baidu_ak,'%s,%s' %(location_long, loaction_lat), 'json')
         geoconv_res = json.loads(self.curl.get(geoconv_url))
 
         if geoconv_res['status'] == 0:
