@@ -106,9 +106,14 @@ class EventMsg(object):
             cinema_pic_urls = random.sample(config.cinema_pics, 5)
             index = 0
             for movie in movies:
+                if movie['detail_info'].has_key('detail_url'):
+                    detail_url = movie['detail_info']['detail_url']
+                else:
+
+                    detail_url = '%s/navigate?start=%s&end=%s&end_name=%s' % (config.server_domain,'%s,%s'%(baidu_map_long,baidu_map_lat), '%s,%s'%(movie['location']['lng'],movie['location']['lat']),movie['address'])
                 res.append({'title': "%s" % ( movie['name'],),
                             'description':'','picurl': cinema_pic_urls[index],
-                            'url':movie['detail_info'].get('detail_url','')})
+                            'url':detail_url})
                 index += 1
             return (res,'multitext')
         else:

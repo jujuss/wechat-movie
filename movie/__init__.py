@@ -7,3 +7,4 @@ app = Flask(__name__)
 import wechat
 import index
 import movie
+import navigate

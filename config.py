@@ -24,6 +24,7 @@ redis_db = 1
 baidu_ak = '5aa13dd85f1ce1fab33ace6e9cb1be39'
 baidu_map_geoconv_api = 'http://api.map.baidu.com/geoconv/v1/'
 baidu_map_place_api = 'http://api.map.baidu.com/place/v2/search'
+baidu_map_geocoding_api = 'http://api.map.baidu.com/geocoder/v2/'
 baidu_map_radius = 5000
 baidu_map_page_size = 5
 
