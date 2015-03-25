@@ -95,33 +95,35 @@ class EventMsg(object):
         baidu_map_long = self.redis.hget('user:%d' % uid, 'baidu_longitude')
         baidu_map_lat = self.redis.hget('user:%d' % uid, 'baidu_latitude')
 
-
-        place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s&page_size=%d' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2', config.baidu_map_page_size)
-        app.logger.info(place_search_url)
-        search_result = json.loads(self.curl.get(place_search_url))
-
-        if search_result['status'] == 0:
-            cinemas = search_result['results']
-            res = []
-            cinema_pic_urls = random.sample(config.cinema_pics, 5)
-            index = 0
-            for cinema in cinemas:
-                if cinema['detail_info'].has_key('detail_url'):
-                    detail_url = cinema['detail_info']['detail_url']
-                else:
-                    detail_url = '%s/navigate?start=%s&end=%s&end_name=%s' % (config.server_domain,
-                        '%s,%s'%(baidu_map_long,baidu_map_lat),
-                        '%s,%s'%(cinema['location']['lng'],cinema['location']['lat']),
-                        cinema['address'])
-
-                res.append({'title': "%s" % ( cinema['name'],),
-                            'description':'',
-                            'picurl': cinema_pic_urls[index],
-                            'url':detail_url})
-                index += 1
-            return (res,'multitext')
+        if baidu_map_long is None or baidu_map_lat is None:
+            return ('定位失败，请打开GPS重新定位', 'text')
         else:
-            return ('经度: %s, 纬度: %s 未获取到周边信息' % (baidu_map_long, baidu_map_lat, ),'text')
+            place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s&page_size=%d' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2', config.baidu_map_page_size)
+            app.logger.info(place_search_url)
+            search_result = json.loads(self.curl.get(place_search_url))
+    
+            if search_result['status'] == 0:
+                cinemas = search_result['results']
+                res = []
+                cinema_pic_urls = random.sample(config.cinema_pics, 5)
+                index = 0
+                for cinema in cinemas:
+                    if cinema['detail_info'].has_key('detail_url'):
+                        detail_url = cinema['detail_info']['detail_url']
+                    else:
+                        detail_url = '%s/navigate?start=%s&end=%s&end_name=%s' % (config.server_domain,
+                            '%s,%s'%(baidu_map_long,baidu_map_lat),
+                            '%s,%s'%(cinema['location']['lng'],cinema['location']['lat']),
+                            cinema['address'])
+    
+                    res.append({'title': "%s" % ( cinema['name'],),
+                                'description':'',
+                                'picurl': cinema_pic_urls[index],
+                                'url':detail_url})
+                    index += 1
+                return (res,'multitext')
+            else:
+                return ('经度: %s, 纬度: %s 未获取到周边信息' % (baidu_map_long, baidu_map_lat, ),'text')
 
     def _handle_click_upcoming(self):
         curr_date = int(time.strftime('%Y%m%d'))
