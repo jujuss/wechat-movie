@@ -32,6 +32,13 @@ baidu_map_page_size = 5
 cinema_pic_domain = 'http://7u2j19.com1.z0.glb.clouddn.com'
 cinema_pics = ['%s/%s_%d.jpg' % (cinema_pic_domain, 'cinema', x) for x in range(1, 21)]
 
+# smtp config
+mailhost = 'smtp.163.com'
+fromaddr = 'wechat_movie@163.com'
+toaddrs = ['steven_hl@163.com', 'chendannn@163.com']
+credentials = ('wechat_movie@163.com', 'VoTfEpYHLA83iV')
+subject = 'wechat_movie error'
+
 # response_msg tpl
 TextTpl = '''<xml>
                 <ToUserName><![CDATA[%s]]></ToUserName>

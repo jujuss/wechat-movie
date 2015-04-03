@@ -130,10 +130,13 @@ class EventMsg(object):
             minfo = self.redis.hgetall("coming:movie:%s" % mid)
             movies.append(minfo)
 
-        res = []
-        for movie in random.sample(movies, 3):
-            res.append({"title": '%s %s上映' % (movie['title'],movie['release_date']), "description":"", "picurl": movie["pic"], "url": movie['description']})
-        return (res,'multitext')
+        if movies:
+            res = []
+            for movie in random.sample(movies, 3):
+                res.append({"title": '%s %s上映' % (movie['title'],movie['release_date']), "description":"", "picurl": movie["pic"], "url": movie['description']})
+            return (res,'multitext')
+        else:
+            return '555，蛋蛋和木木私奔了...', 'text'
 
     def _handle_click_nowplaying(self):
         curr_date = int(time.strftime('%Y%m%d'))
@@ -142,7 +145,10 @@ class EventMsg(object):
             minfo = self.redis.hgetall("now:movie:%s" % mid)
             movies.append(minfo)
 
-        res = []
-        for movie in random.sample(movies, 5):
-            res.append({"title": '%s %s' % (movie['title'],movie['score']), "description":"", "picurl": movie["pic"], "url": movie['description']})
-        return (res,'multitext')
+        if movies:
+            res = []
+            for movie in random.sample(movies, 5):
+                res.append({"title": '%s %s' % (movie['title'],movie['score']), "description":"", "picurl": movie["pic"], "url": movie['description']})
+            return (res,'multitext')
+        else:
+            return '555，蛋蛋和木木私奔了...', 'text'
