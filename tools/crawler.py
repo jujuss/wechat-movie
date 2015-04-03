@@ -29,8 +29,8 @@ def _set_logger(logger):
                                       config.toaddrs, config.subject,
                                       config.credentials)
     sh.setLevel(logging.ERROR)
-    formatter = logging.Formatter('''%(asctime)s %(filename)s[\
-    line:%(lineno)d] %(levelname)s %(message)s''',
+    formatter = logging.Formatter('%(asctime)s %(filename)s['
+                                  'line:%(lineno)d] %(levelname)s %(message)s',
                                   datefmt='%a, %d %b %Y %H:%M:%S')
     ch.setFormatter(formatter)
 
