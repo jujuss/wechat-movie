@@ -2,13 +2,11 @@
 # coding: utf-8
 
 import sys
-import os.path as path
 reload(sys)
 sys.setdefaultencoding("utf-8")
-sys.path.append(path.dirname(path.abspath(path.dirname(__file__))))
 
 
-from libs import mcurl
+from ..lib import mcurl
 import config
 
 import re
@@ -68,7 +66,8 @@ class Crawler(object):
         try:
             nowplaying_node = soup.find_all('div', id='nowplaying')[0]
             curr_date = time.strftime('%Y%m%d')
-            for m_node in nowplaying_node.find_all('li', id=re.compile(r'\d+')):
+            for m_node in \
+                    nowplaying_node.find_all('li', id=re.compile(r'\d+')):
                 m_douban_id = m_node['id']
                 m_title = m_node['data-title']
                 m_score = m_node['data-score']
@@ -81,7 +80,8 @@ class Crawler(object):
                               'description': m_description, 'pic': m_pic}
                 self.redis.hmset('now:movie:%s' % m_douban_id, movie_info)
                 logger.info('nowplaying: %s %s %s %s %s' %
-                            (m_douban_id, m_title, m_score, m_description, m_pic))
+                            (m_douban_id, m_title, m_score,
+                             m_description, m_pic))
         except Exception as e:
             logger.error('handle_nowplaying error message: %r', e)
 

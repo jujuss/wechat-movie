@@ -2,7 +2,7 @@
 
 from flask import request,make_response
 
-from . import app
+from .. import app
 import msg_text
 import msg_event
 import config
