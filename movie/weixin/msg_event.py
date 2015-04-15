@@ -6,8 +6,8 @@ import random
 import json
 
 import config
-from libs import mcurl
-from . import app
+from ..lib import mcurl
+from .. import app
 
 class EventMsg(object):
     def __init__(self,msg):
@@ -101,7 +101,7 @@ class EventMsg(object):
             place_search_url = '%s?ak=%s&query=%s&location=%s&radius=%d&output=%s&scope=%s&page_size=%d' % (config.baidu_map_place_api, config.baidu_ak, '电影院', '%s,%s' % (baidu_map_lat, baidu_map_long), config.baidu_map_radius, 'json', '2', config.baidu_map_page_size)
             app.logger.info(place_search_url)
             search_result = json.loads(self.curl.get(place_search_url))
-    
+
             if search_result['status'] == 0:
                 cinemas = search_result['results']
                 res = []
@@ -115,7 +115,7 @@ class EventMsg(object):
                             '%s,%s'%(baidu_map_long,baidu_map_lat),
                             '%s,%s'%(cinema['location']['lng'],cinema['location']['lat']),
                             cinema['address'])
-    
+
                     res.append({'title': "%s" % ( cinema['name'],),
                                 'description':'',
                                 'picurl': cinema_pic_urls[index],

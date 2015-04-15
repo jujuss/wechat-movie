@@ -30,7 +30,8 @@ baidu_map_page_size = 5
 
 # camera_pic list
 cinema_pic_domain = 'http://7u2j19.com1.z0.glb.clouddn.com'
-cinema_pics = ['%s/%s_%d.jpg' % (cinema_pic_domain, 'cinema', x) for x in range(1, 21)]
+cinema_pics = \
+    ['%s/%s_%d.jpg' % (cinema_pic_domain, 'cinema', x) for x in range(1, 21)]
 
 # smtp config
 mailhost = 'smtp.163.com'

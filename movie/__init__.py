@@ -4,7 +4,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-import wechat
+from .weixin import wechat
 import index
 import movie
 import navigate

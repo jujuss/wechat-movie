@@ -9,7 +9,7 @@ sys.setdefaultencoding('utf8')
 import json
 
 from . import app
-from libs import mcurl
+from .lib import mcurl
 import config
 
 
