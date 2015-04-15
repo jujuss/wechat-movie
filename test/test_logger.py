@@ -46,14 +46,14 @@ class Crawler(object):
         try:
             self.curl = mcurl.CurlHelper()
             self.redis = redis.Redis(host=config.redis_host,
-                                     port=config.redis_port,
+                                     port=6377,
                                      db=config.redis_db)
         except Exception as e:
             logger.error('error init crawler, exception: %r', e)
 
     def work(self):
         try:
-            resp = self.curl.get('movie.com')
+            resp = self.curl.get(config.douban_url)
             soup = BeautifulSoup(resp)
             t1 = threading.Thread(target=self.handle_nowplaying, args=(soup,))
             t2 = threading.Thread(target=self.handle_upcoming, args=(soup,))
