@@ -34,9 +34,9 @@ cinema_pics = ['%s/%s_%d.jpg' % (cinema_pic_domain, 'cinema', x) for x in range(
 
 # smtp config
 mailhost = 'smtp.163.com'
-fromaddr = 'wechat_movie@163.com'
+fromaddr = 'qiuhunjihl@163.com'
 toaddrs = ['steven_hl@163.com', 'chendannn@163.com']
-credentials = ('wechat_movie@163.com', 'VoTfEpYHLA83iV')
+credentials = ('qiuhunjihl@163.com', 'VoTfEpYHLA83iV')
 subject = 'wechat_movie error'
 
 # response_msg tpl
