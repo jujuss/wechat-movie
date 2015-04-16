@@ -31,6 +31,7 @@ def _set_logger(logger):
                                   'line:%(lineno)d] %(levelname)s %(message)s',
                                   datefmt='%a, %d %b %Y %H:%M:%S')
     ch.setFormatter(formatter)
+    sh.setFormatter(formatter)
 
     logger.addHandler(ch)
     logger.addHandler(sh)
