@@ -4,6 +4,10 @@
 token = 'ilovemovie'
 appid = 'wxffaceb82ccad873e'
 appsecret = 'e168947a5cf61520d2477535c4f7322d'
+wx_access_token_uri = ('https://api.weixin.qq.com/cgi-bin/'
+                       'token?grant_type=client_credential&appid=%s&secret=%s')
+wx_upload_media_uri = ('https://api.weixin.qq.com/cgi-bin/media/'
+                       'upload?access_token=%s&type=%s')
 
 # crawler config
 douban_url = 'http://movie.douban.com/nowplaying/shanghai/'
