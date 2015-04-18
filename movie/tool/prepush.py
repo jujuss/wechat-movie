@@ -4,19 +4,19 @@
 
 import logging
 import os.path as path
-import config
 import sys
-import redis
+import time
 
+from .. import config
+from .. import rconn
 from . import filter
 from . import downloader
 from ..lib import mcurl
+from ..weixin.sdk.misc import get_access_token
 
 logger = logging.getLogger(__name__)
 root_path = path.abspath("../..")
 curl = mcurl.CurlHelper()
-rconn = redis.Redis(host=config.redis_host, port=config.redis_port,
-                    db=config.redis_db)
 
 
 def download_pics(movies):
@@ -32,26 +32,13 @@ def download_pics(movies):
                 movie['pic_abspath'] = dest_path
 
 
-def get_access_token():
-    # To Do 需要对access_token 做缓存处理
-    access_token_api = config.wx_access_token_uri % \
-        (config.appid, config.appsecret)
-    res = curl.get(access_token_api, resp_type='json')
-    if 'access_token' in res:
-        return res['access_token']
-    else:
-        logger.error('Accquire access_token error, errcode: %s, errmsg: %s',
-                     res['errcode'], res['errmsg'])
-        return None
-
-
 def upload_pics(access_token, files):
     upload_media_api = config.wx_upload_media_uri % \
         (access_token, 'thumb')
     mcurl.upload(upload_media_api, files)
 
 
-def main():
+def work():
     access_token = get_access_token()
     if access_token:
         logger.info('Get access_token error')
@@ -69,9 +56,13 @@ def main():
     ret = upload_pics(access_token, upload_file_infos)
     logger.info('Upload wx meida, get msg: %r', ret)
 
-    # To Do
-    # 需要将media_id写入数据库或者直接发送xinxi
+    # 需要将media_id写入数据库
+    timestamp = time.strftime('%Y%m%d')
     for info in ret:
         douban_id = info['douban_id']
         wx_media_id = info['wx_media_id']
-        rconn.hset('now:movie:%s' % douban_id, 'wx_media_id', wx_media_id)
+        # rconn.hset('now:movie:%s' % douban_id, 'wx_media_id', wx_media_id)
+        movie_info = rconn.hgetall('now:movie:%s' % douban_id)
+        movie_info['pic_wx_media_id'] = wx_media_id
+        rconn.zadd('push', douban_id, timestamp)
+        rconn.hmset('push:%s:info' % douban_id, movie_info)

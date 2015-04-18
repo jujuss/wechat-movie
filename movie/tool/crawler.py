@@ -4,27 +4,25 @@
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
-
-from ..lib import mcurl
-import config
-
 import re
 from bs4 import BeautifulSoup
-import redis
 import time
 import threading
 import logging
 
+
+from ..lib import mcurl
+from .. import config
+from .. import rconn
+
 logger = logging.getLogger(__name__)
+
 
 class Crawler(object):
     def __init__(self):
         try:
             self.curl = mcurl.CurlHelper()
-            self.redis = redis.Redis(host=config.redis_host,
-                                     port=config.redis_port,
-                                     db=config.redis_db)
+            self.redis = rconn
         except Exception as e:
             logger.error('error init crawler, exception: %r', e)
 

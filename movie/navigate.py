@@ -10,7 +10,7 @@ import json
 
 from . import app
 from .lib import mcurl
-import config
+from . import config
 
 
 @app.route('/navigate')

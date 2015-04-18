@@ -1,33 +1,34 @@
 # coding:utf-8
 
-from flask import request,make_response
-
-from .. import app
-import msg_text
-import msg_event
-import config
+from flask import request, make_response
 import hashlib
 try:
-    from xml.etree import cElementTree as ET
+    from xml.etree import cElementTree as ET # noqa
 except:
-    from xml.etree import ElementInclude as ET
+    from xml.etree import ElementInclude as ET # noqa
 
-@app.route('/weixin',methods = ['GET','POST'])
+from .. import app
+from .. import config
+from . import msg_text
+from . import msg_event
+
+
+@app.route('/weixin', methods=['GET', 'POST'])
 def wechat():
-    signature = request.args.get('signature','')
-    nonce = request.args.get('nonce','')
-    timestamp = request.args.get('timestamp','')
+    signature = request.args.get('signature', '')
+    nonce = request.args.get('nonce', '')
+    timestamp = request.args.get('timestamp', '')
 
-    if checkSignature(signature,nonce,timestamp):
+    if check_signature(signature, nonce, timestamp):
         if request.method == 'GET':
-            return make_response(request.args.get('echostr',''))
+            return make_response(request.args.get('echostr', ''))
         elif request.method == 'POST':
             app.logger.info(request.data)
             msg = parse_request_xml(request.data)
             msg_type = msg.get('MsgType')
             msg_cls = {
-                 "text": msg_text.TextMsg,
-                 'event': msg_event.EventMsg,
+                "text": msg_text.TextMsg,
+                'event': msg_event.EventMsg,
             }
             resp_msg = msg_cls[msg_type](msg).handle()
             app.logger.info(resp_msg)
@@ -36,16 +37,17 @@ def wechat():
         return make_response('hello, weixin')
 
 
-def checkSignature(signature,nonce,timestamp):
-        tmp_list = [config.token,timestamp,nonce]
-        tmp_list.sort()
-        sha1 = hashlib.sha1()
-        map(sha1.update, tmp_list)
-        hash_code = sha1.hexdigest()
-        if hash_code== signature:
-            return True
-        else:
-            return False
+def check_signature(signature, nonce, timestamp):
+    tmp_list = [config.token, timestamp, nonce]
+    tmp_list.sort()
+    sha1 = hashlib.sha1()
+    map(sha1.update, tmp_list)
+    hash_code = sha1.hexdigest()
+    if hash_code == signature:
+        return True
+    else:
+        return False
+
 
 def parse_request_xml(xml_str):
     msg = dict()
@@ -54,4 +56,3 @@ def parse_request_xml(xml_str):
         for child in root:
             msg[child.tag] = child.text
     return msg
-

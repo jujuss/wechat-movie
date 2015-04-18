@@ -1,11 +1,11 @@
 # coding:utf-8
 
 import time
-import redis
 import random
 import json
 
-import config
+from .. import config
+from .. import rconn
 from ..lib import mcurl
 from .. import app
 
@@ -15,9 +15,7 @@ class EventMsg(object):
         self.event = msg.get("Event")
         self.to_user = msg.get("ToUserName")
         self.from_user = msg.get("FromUserName")
-        self.redis = redis.Redis(host=config.redis_host,
-                                 port=config.redis_port,
-                                 db=config.redis_db)
+        self.redis = rconn
         self.curl = mcurl.CurlHelper()
 
 

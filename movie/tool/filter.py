@@ -4,7 +4,7 @@ import redis
 import time
 import logging
 
-import config
+from .. import config
 
 logger = logging.getLogger(__name__)
 
