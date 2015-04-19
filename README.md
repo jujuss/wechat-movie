@@ -17,17 +17,17 @@ Movie client based on wechat
 
 # Commands
 
-Run service:
+- Run service:
 
-`$ bin/start.sh`
+ `$ bin/start.sh`
 
-Stop service:
+- Stop service:
 
-`$ bin/stop.sh`
+ `$ bin/stop.sh`
 
-Restart service:
+- Restart service:
 
-`$ bin/restart.sh`
+ `$ bin/restart.sh`
 
 # Documentation
 ## PRD
