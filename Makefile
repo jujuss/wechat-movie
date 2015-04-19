@@ -9,4 +9,4 @@ depend:
 	pip install -q -r requirements.txt
 
 cron:
-	sh bin/schedule.sh
+	sh bin/schedule.sh && crontab ~/.crontab
