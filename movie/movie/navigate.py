@@ -1,16 +1,15 @@
 # coding:utf-8
 
-from flask import render_template
-from flask import request
+from flask import render_template, request
 
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 import json
 
-from . import app
-from .lib import mcurl
-from . import config
+from .. import app
+from ..lib import mcurl
+from .. import config
 
 
 @app.route('/navigate')

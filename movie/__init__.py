@@ -33,3 +33,9 @@ _set_logger(logger)
 
 rconn = redis.Redis(host=config.redis_host, port=config.redis_port,
                     db=config.redis_db)
+
+from . import index
+from .weixin import wechat
+from .movie import show, navigate
+
+__all__ = ['index', 'show', 'navigate', 'wechat']

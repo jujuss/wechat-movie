@@ -1,7 +1,7 @@
 # coding:utf-8
 
 from flask import redirect
-from . import app
+from .. import app
 
 
 @app.route('/movie/subject/<douban_id>/', methods=['GET', 'POST'])
