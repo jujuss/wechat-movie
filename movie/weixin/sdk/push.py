@@ -19,15 +19,17 @@ def gen_push_news():
     articles = list()
     for push_id in push_ids:
         push_info = rconn.hgetall('push:%s:info' % push_id)
-        article = {"thumb_media_id": push_info['pic_wx_media_id'],
-                   "author": "",
-                   "title": "%s %s" % (push_info['title'], push_info['score']),
-                   "content_source_url": push_info['description'],
-                   "content": push_info['title'],
-                   "digest": "",
-                   "show_cover_pic": "0"}
+        article = \
+            {"thumb_media_id": push_info['pic_wx_media_id'],
+             "author": "",
+             "title": "%s %s" % (push_info['title'], push_info['score']),
+             "content_source_url": push_info['description'],
+             "content": ("<iframe src='%s'></iframe>" %
+                         push_info['description']),
+             "digest": "",
+             "show_cover_pic": "0"}
         articles.append(article)
-    msg = json.dumps({"articles": articles})
+    msg = json.dumps({"articles": articles}, ensure_ascii=False)
     return msg
 
 
