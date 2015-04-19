@@ -70,8 +70,18 @@ def push():
     for info in ret:
         douban_id = info['douban_id']
         wx_media_id = info['wx_media_id']
-        # rconn.hset('now:movie:%s' % douban_id, 'wx_media_id', wx_media_id)
+        resp = \
+            mcurl.CurlHelper().get(config.db_movie_info_uri % douban_id,
+                                   resp_type='json')
+        summary = resp['summary']
+        img_small, img_medium, img_large = \
+            resp['images']['small'], resp['images']['medium'],\
+            resp['images']['large']
         movie_info = rconn.hgetall('now:movie:%s' % douban_id)
+        movie_info['summary'] = summary
+        movie_info['img_small'] = img_small
+        movie_info['img_medium'] = img_medium
+        movie_info['img_large'] = img_large
         movie_info['pic_wx_media_id'] = wx_media_id
         rconn.zadd('push', douban_id, timestamp)
         rconn.hmset('push:%s:info' % douban_id, movie_info)

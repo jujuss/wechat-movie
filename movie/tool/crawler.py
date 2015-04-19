@@ -19,14 +19,13 @@ from .. import logger
 class Crawler(object):
     def __init__(self):
         try:
-            self.curl = mcurl.CurlHelper()
             self.redis = rconn
         except Exception as e:
             logger.error('error init crawler, exception: %r', e)
 
     def work(self):
         try:
-            resp = self.curl.get(config.douban_url)
+            resp = mcurl.CurlHelper().get(config.douban_url)
             soup = BeautifulSoup(resp)
             t1 = threading.Thread(target=self.handle_nowplaying, args=(soup,))
             t2 = threading.Thread(target=self.handle_upcoming, args=(soup,))
@@ -52,7 +51,8 @@ class Crawler(object):
 
                 self.redis.zadd('nowplaying', m_douban_id, int(curr_date))
                 movie_info = {'title': m_title, 'score': m_score,
-                              'description': m_description, 'pic': m_pic}
+                              'description': m_description, 'pic': m_pic,
+                              'summary': ''}
                 self.redis.hmset('now:movie:%s' % m_douban_id, movie_info)
                 logger.info('nowplaying: %s %s %s %s %s' %
                             (m_douban_id, m_title, m_score,
@@ -73,8 +73,10 @@ class Crawler(object):
                 m_release_date = (m_node.find_all('li', 'release-date')[0]
                                   .stripped_strings.next())[:-2]
                 self.redis.zadd('upcoming', m_douban_id, int(curr_date))
-                movie_info = {'title': m_title, 'release_date': m_release_date,
-                              'description': m_description, 'pic': m_pic}
+                movie_info = {'title': m_title,
+                              'release_date': m_release_date,
+                              'description': m_description, 'pic': m_pic,
+                              'summary': ''}
                 self.redis.hmset('coming:movie:%s' % m_douban_id, movie_info)
                 logger.info('upcoming: %s %s %s %s %s' %
                             (m_douban_id, m_title, m_release_date,

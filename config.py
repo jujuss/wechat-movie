@@ -15,6 +15,7 @@ wx_mass_send_uri = ('https://api.weixin.qq.com/cgi-bin/message/mass/'
 
 # crawler config
 douban_url = 'http://movie.douban.com/nowplaying/shanghai/'
+db_movie_info_uri = ('http://api.douban.com/v2/movie/subject/%s')
 
 # server config
 server_host = '0.0.0.0'
