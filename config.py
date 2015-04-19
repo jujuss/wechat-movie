@@ -8,6 +8,10 @@ wx_access_token_uri = ('https://api.weixin.qq.com/cgi-bin/'
                        'token?grant_type=client_credential&appid=%s&secret=%s')
 wx_upload_media_uri = ('https://api.weixin.qq.com/cgi-bin/media/'
                        'upload?access_token=%s&type=%s')
+wx_upload_news_uri = ('https://api.weixin.qq.com/cgi-bin/media/'
+                      'uploadnews?access_token=%s')
+wx_mass_send_uri = ('https://api.weixin.qq.com/cgi-bin/message/mass/'
+                    'send?access_token=%s')
 
 # crawler config
 douban_url = 'http://movie.douban.com/nowplaying/shanghai/'

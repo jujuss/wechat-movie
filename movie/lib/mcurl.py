@@ -3,9 +3,8 @@
 import pycurl
 import StringIO
 import json
-import logging
 
-logger = logging.getLogger(__name__)
+from .. import logger
 
 
 class CurlHelper(object):
@@ -84,15 +83,17 @@ class CurlHelper(object):
                 resp = json.loads(b.getvalue())
                 b.close()
 
-                if 'media_id' in resp:
+                if 'errcode' not in resp:
+                    logger.info('upload success, %r', resp)
                     res.append({'douban_id': douban_id,
-                                'wx_media_id': resp['media_id']})
+                                'wx_media_id': resp['thumb_media_id']})
                 else:
-                    print 'upload error'
+                    logger.error('upload media error, %r', resp)
         except Exception, e:
-            print 'upload error %r' % e
-        self.close()
-        return res
+            logger.error('upload error, %r', e)
+        else:
+            self.close()
+            return res
 
     def close(self):
         self.curl.close()

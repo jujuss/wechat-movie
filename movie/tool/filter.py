@@ -2,11 +2,8 @@
 
 import redis
 import time
-import logging
 
 from .. import config
-
-logger = logging.getLogger(__name__)
 
 
 def gen_now_top_movies(count=3):
@@ -20,6 +17,7 @@ def gen_now_top_movies(count=3):
         movie = rconn.hgetall("now:movie:%s" % movie_id)
         movie['id'] = movie_id
         now_movies.append(movie)
-    sorted_now_movies = sorted(now_movies, lambda x: x['score'])
+    sorted_now_movies = sorted(now_movies, key=lambda x: x['score'],
+                               reverse=True)
     now_top_movies = sorted_now_movies[:count]
     return now_top_movies

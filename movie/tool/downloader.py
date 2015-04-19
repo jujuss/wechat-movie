@@ -2,10 +2,7 @@
 # coding: utf-8
 
 import subprocess
-import logging
-
-
-logger = logging.getLogger(__name__)
+from .. import logger
 
 
 def download(uri, destination=None):

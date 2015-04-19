@@ -8,14 +8,12 @@ import re
 from bs4 import BeautifulSoup
 import time
 import threading
-import logging
 
 
 from ..lib import mcurl
 from .. import config
 from .. import rconn
-
-logger = logging.getLogger(__name__)
+from .. import logger
 
 
 class Crawler(object):

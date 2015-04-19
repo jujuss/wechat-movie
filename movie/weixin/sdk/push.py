@@ -3,15 +3,13 @@
 
 import time
 import json
-import logging
 
 from . import misc
 from ... import config
+from ... import logger
 from ... import rconn
 from ...lib import mcurl
 
-
-logger = logging.getLogger(__name__)
 curl = mcurl.CurlHelper()
 
 
@@ -37,8 +35,8 @@ def mget_openid():
     max_uid = int(rconn.get('uid'))
     wx_openids = list()
     for uid in xrange(1, max_uid + 1):
-        wx_openid = rconn.hget('usr:%s' % uid, 'wx_openid')
-        wx_openid.append(wx_openid)
+        wx_openid = rconn.hget('user:%s' % uid, 'wx_openid')
+        wx_openids.append(wx_openid)
 
     return wx_openids
 
@@ -48,14 +46,18 @@ def send_job():
         access_token = misc.get_access_token()
         news = gen_push_news()
         wx_openids = mget_openid()
+        logger.info('news: %r', news)
+        logger.info('wx_openids: %r', wx_openids)
         resp = curl.post(config.wx_upload_news_uri % access_token, data=news,
                          resp_type='json')
-        logger.info('upload news, %r', resp)
+        logger.info('upload news, get response: %r', resp)
         if 'media_id' in resp:
             news_media_id = resp['media_id']
             send_req_data = {"touser": wx_openids,
-                             "mpnews": news_media_id,
+                             "mpnews": {"media_id": news_media_id},
                              "msgtype": "mpnews"}
+            send_req_data = json.dumps(send_req_data)
+            logger.info('send_req_data: %r', send_req_data)
             res = curl.post(config.wx_mass_send_uri % access_token,
                             data=send_req_data, resp_type='json')
             logger.info('push job, get msg: %r', res)
