@@ -31,7 +31,7 @@ def gen_push_news():
              "author": "",
              "title": "%s %s" % (push_info['title'], push_info['score']),
              "content_source_url": push_info['description'],
-             # "content": content,
+             "content": content,
              "digest": "",
              "show_cover_pic": "0",
              "score": push_info['score']}
