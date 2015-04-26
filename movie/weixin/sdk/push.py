@@ -3,6 +3,7 @@
 
 import time
 import json
+import sys
 
 from . import misc
 from ... import config
@@ -12,11 +13,13 @@ from ...lib import mcurl
 
 curl = mcurl.CurlHelper()
 
-
 def gen_push_news():
     timestamp = time.strftime('%Y%m%d')
     push_ids = rconn.zrangebyscore('push', timestamp, timestamp)
     articles = list()
+
+    # 对推送的消息按照score排序
+
     for push_id in push_ids:
         push_info = rconn.hgetall('push:%s:info' % push_id)
         content = \
@@ -28,11 +31,17 @@ def gen_push_news():
              "author": "",
              "title": "%s %s" % (push_info['title'], push_info['score']),
              "content_source_url": push_info['description'],
-             "content": content,
+             # "content": content,
              "digest": "",
-             "show_cover_pic": "0"}
+             "show_cover_pic": "0",
+             "score": push_info['score']}
         articles.append(article)
-    msg = json.dumps({"articles": articles}, ensure_ascii=False)
+    articles = sorted(articles, key=lambda x: x['score'], reverse=True)
+    articles_final = []
+    for article in articles:
+        article.pop("score")
+        articles_final.append(article)
+    msg = json.dumps({"articles": articles_final}, ensure_ascii=False)
     return msg
 
 
@@ -75,5 +84,5 @@ def send_job():
         else:
             logger.info('upload news error, errcode:%s errmsg:%s',
                         resp['errcode'], resp['errmsg'])
-    except IOError, e:
-        logger.error('Get access_token error %r', e)
+    except Exception as e:
+        logger.error('Send news error: %r', e)

@@ -50,38 +50,41 @@ def push():
         access_token = get_access_token()
     except IOError, e:
         logger.error('Get access_token error %r', e)
-    pic_root_path = get_pic_path()
-    logger.info('pic path: %r', pic_root_path)
-    now_top_movies = filter.gen_now_top_movies()
-    logger.info("Top movies: %r", now_top_movies)
-    download_pics(now_top_movies, pic_root_path)
-    upload_file_infos = list()
+    try:
+        pic_root_path = get_pic_path()
+        logger.info('pic path: %r', pic_root_path)
+        now_top_movies = filter.gen_now_top_movies()
+        logger.info("Top movies: %r", now_top_movies)
+        download_pics(now_top_movies, pic_root_path)
+        upload_file_infos = list()
 
-    for movie in now_top_movies:
-        upload_file_infos.append({"douban_id": movie['id'],
-                                  "file_path": movie['pic_abspath'],
-                                  "field": ""})
+        for movie in now_top_movies:
+            upload_file_infos.append({"douban_id": movie['id'],
+                                      "file_path": movie['pic_abspath'],
+                                      "field": ""})
 
-    ret = upload_pics(access_token, upload_file_infos)
-    logger.info('Upload wx meida, get msg: %r', ret)
+        ret = upload_pics(access_token, upload_file_infos)
+        logger.info('Upload wx meida, get msg: %r', ret)
 
-    # 需要将media_id写入数据库
-    timestamp = time.strftime('%Y%m%d')
-    for info in ret:
-        douban_id = info['douban_id']
-        wx_media_id = info['wx_media_id']
-        resp = \
-            mcurl.CurlHelper().get(config.db_movie_info_uri % douban_id,
-                                   resp_type='json')
-        summary = resp['summary']
-        img_small, img_medium, img_large = \
-            resp['images']['small'], resp['images']['medium'],\
-            resp['images']['large']
-        movie_info = rconn.hgetall('now:movie:%s' % douban_id)
-        movie_info['summary'] = summary
-        movie_info['img_small'] = img_small
-        movie_info['img_medium'] = img_medium
-        movie_info['img_large'] = img_large
-        movie_info['pic_wx_media_id'] = wx_media_id
-        rconn.zadd('push', douban_id, timestamp)
-        rconn.hmset('push:%s:info' % douban_id, movie_info)
+        # 需要将media_id写入数据库
+        timestamp = time.strftime('%Y%m%d')
+        for info in ret:
+            douban_id = info['douban_id']
+            wx_media_id = info['wx_media_id']
+            resp = \
+                mcurl.CurlHelper().get(config.db_movie_info_uri % douban_id,
+                                       resp_type='json')
+            summary = resp['summary']
+            img_small, img_medium, img_large = \
+                resp['images']['small'], resp['images']['medium'],\
+                resp['images']['large']
+            movie_info = rconn.hgetall('now:movie:%s' % douban_id)
+            movie_info['summary'] = summary
+            movie_info['img_small'] = img_small
+            movie_info['img_medium'] = img_medium
+            movie_info['img_large'] = img_large
+            movie_info['pic_wx_media_id'] = wx_media_id
+            rconn.zadd('push', douban_id, timestamp)
+            rconn.hmset('push:%s:info' % douban_id, movie_info)
+    except Exception as e:
+        logger.error('Upload media error: %r', e)
