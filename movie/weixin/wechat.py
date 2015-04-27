@@ -9,8 +9,8 @@ except:
 
 from .. import app
 from .. import config
-from . import msg_text
-from . import msg_event
+from .msg import msg_text
+from .msg import msg_event
 
 
 @app.route('/weixin', methods=['GET', 'POST'])
