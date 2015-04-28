@@ -15,7 +15,7 @@ wx_mass_send_uri = ('https://api.weixin.qq.com/cgi-bin/message/mass/'
 
 # tuling config
 tuling_robot_api = 'http://www.tuling123.com/openapi/api'
-tuling_robot_key = '77dcd53ef86d9c4b2cebf35041ecbafd'
+tuling_robot_key = '18c2dfecc0edad4a75d8f30f321857cf'
 
 # crawler config
 douban_url = 'http://movie.douban.com/nowplaying/shanghai/'
