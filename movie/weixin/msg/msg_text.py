@@ -3,6 +3,7 @@
 import time
 
 from ... import config
+from ... import app
 from . import msg_robot
 
 
@@ -18,6 +19,7 @@ class TextMsg(object):
         resp_msg, resp_msg_type = \
             msg_robot.RobotMsg(self.from_user, self.content).get()
         curr_timestamp = int(time.time())
+        app.logger.info('response msg: %r', resp_msg)
 
         if resp_msg_type == 'text':
             return config.TextTpl % (self.from_user, self.to_user,
