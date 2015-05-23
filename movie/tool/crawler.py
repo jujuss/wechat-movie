@@ -37,7 +37,7 @@ class Crawler(object):
         except Exception as e:
             logger.exception('error get movies info, exception: %r', e)
 
-    def _filter_keywords(cls, movie):
+    def _filter_keywords(self, movie):
         for keyword in config.keyworld_blacklists:
             if keyword in movie['data-title']:
                 return True
