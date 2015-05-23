@@ -77,7 +77,7 @@ def push():
         timestamp = time.strftime('%Y%m%d')
         poster_path = get_abs_poster_path()
         if not path.exists(poster_path):
-            os.mkdir(poster_path)
+            os.mkdirs(poster_path)
 
         for info in ret:
             douban_id = info['douban_id']
