@@ -13,8 +13,9 @@ class VoiceMsg(object):
         self.msg = msg
         self.to_user = msg.get('ToUserName')
         self.from_user = msg.get('FromUserName')
-        self.content = msg.get('Recognition').encode('utf-8')
-
+        self.content = msg.get('Recognition')
+        if self.content:
+            self.content = self.content.encode('utf-8')
 
     def handle(self):
         resp_msg, resp_msg_type = \
