@@ -18,10 +18,13 @@ class VoiceMsg(object):
             self.content = self.content.encode('utf-8')
 
     def handle(self):
-        resp_msg, resp_msg_type = \
-            msg_robot.RobotMsg(self.from_user, self.content).get()
-        curr_timestamp = int(time.time())
-        app.logger.info('response msg: %r', resp_msg)
+        if self.content:
+            resp_msg, resp_msg_type = \
+                msg_robot.RobotMsg(self.from_user, self.content).get()
+            curr_timestamp = int(time.time())
+            app.logger.info('response msg: %r', resp_msg)
+        else:
+            resp_msg, resp_msg_type = '主人，您想要小的做什么呢?', 'text'
 
         if resp_msg_type == 'text':
             return config.TextTpl % (self.from_user, self.to_user,
