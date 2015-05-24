@@ -23,6 +23,7 @@ class Crawler(object):
         except Exception as e:
             logger.error('error init crawler, exception: %r', e)
 
+
     def work(self):
         try:
             resp = mcurl.CurlHelper().get(config.douban_url)
@@ -36,12 +37,21 @@ class Crawler(object):
         except Exception as e:
             logger.exception('error get movies info, exception: %r', e)
 
+    def _filter_keywords(self, movie):
+        for keyword in config.keyworld_blacklists:
+            if keyword in movie['data-title']:
+                return True
+        return False
+
     def handle_nowplaying(self, soup):
         try:
             nowplaying_node = soup.find_all('div', id='nowplaying')[0]
             curr_date = time.strftime('%Y%m%d')
             for m_node in \
                     nowplaying_node.find_all('li', id=re.compile(r'\d+')):
+                if self._filter_keywords(m_node):
+                    continue
+
                 m_douban_id = m_node['id']
                 m_title = m_node['data-title']
                 m_score = m_node['data-score']
@@ -65,6 +75,9 @@ class Crawler(object):
             upcoming_node = soup.find_all('div', id='upcoming')[0]
             curr_date = time.strftime('%Y%m%d')
             for m_node in upcoming_node.find_all('li', id=re.compile(r'\d+')):
+                if self._filter_keywords(m_node):
+                    continue
+
                 m_douban_id = m_node['id']
                 m_title = m_node['data-title']
                 m_description = config.server_domain + \
