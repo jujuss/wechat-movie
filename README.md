@@ -24,6 +24,8 @@ Movie client based on wechat
 - Stop service:
 
  `$ bin/stop.sh`
+ 
+ Test
 
 - Restart service:
 
