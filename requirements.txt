@@ -3,4 +3,3 @@ redis==2.10.3
 beautifulsoup4==4.3.2
 pycurl>=7.19.0
 ansible==1.9.0.1
-sqlalchemy
