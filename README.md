@@ -24,6 +24,8 @@ Movie client based on wechat
 - Stop service:
 
  `$ bin/stop.sh`
+ 
+ Test
 
 - Restart service:
 
@@ -36,4 +38,5 @@ Movie client based on wechat
 Jenkins Good
 
 
-# Jenkins Test
+
+What's the fuck
