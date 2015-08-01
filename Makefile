@@ -18,3 +18,5 @@ decrypt:
 
 encrypt:
 	ansible-vault encrypt config.py
+	
+Test
