@@ -24,6 +24,8 @@ Movie client based on wechat
 - Stop service:
 
  `$ bin/stop.sh`
+ 
+ Test
 
 - Restart service:
 
@@ -33,5 +35,3 @@ Movie client based on wechat
 ## PRD
 [https://www.zybuluo.com/kinghan/note/63504](https://www.zybuluo.com/kinghan/note/63504)
 
-
-# Jenkins Test
