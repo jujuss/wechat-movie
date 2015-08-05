@@ -23,6 +23,13 @@ def get_pic_path():
     return path.abspath(root_path) + "/download"
 
 
+def get_abs_poster_path():
+    root_path = path.dirname(__file__)
+    root_path = path.dirname(path.dirname(root_path))
+
+    return path.abspath(root_path) + "/movie/static/img/poster"
+
+
 def download_pics(movies, pic_root_path):
     if not path.exists(pic_root_path):
         os.mkdir(pic_root_path)
@@ -68,6 +75,10 @@ def push():
 
         # 需要将media_id写入数据库
         timestamp = time.strftime('%Y%m%d')
+        poster_path = get_abs_poster_path()
+        if not path.exists(poster_path):
+            os.mkdirs(poster_path)
+
         for info in ret:
             douban_id = info['douban_id']
             wx_media_id = info['wx_media_id']
@@ -78,6 +89,15 @@ def push():
             img_small, img_medium, img_large = \
                 resp['images']['small'], resp['images']['medium'],\
                 resp['images']['large']
+
+            img_large_name = img_large.split('/')[-1]
+            img_large_dest_path = poster_path + "/%s" % img_large_name
+            if not path.exists(img_large_dest_path):
+                downloader.download(img_large, img_large_dest_path)
+            img_large = \
+                config.server_domain + \
+                '/static/img/poster/%s' % img_large_name
+
             movie_info = rconn.hgetall('now:movie:%s' % douban_id)
             movie_info['summary'] = summary
             movie_info['img_small'] = img_small

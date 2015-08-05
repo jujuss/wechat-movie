@@ -2,3 +2,7 @@
 *.log
 download
 .idea
+*.png
+*.jpg
+*idea
+*.swp

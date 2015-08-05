@@ -9,8 +9,9 @@ except:
 
 from .. import app
 from .. import config
-from . import msg_text
-from . import msg_event
+from .msg import msg_text
+from .msg import msg_event
+from .msg import msg_voice
 
 
 @app.route('/weixin', methods=['GET', 'POST'])
@@ -29,6 +30,7 @@ def wechat():
             msg_cls = {
                 "text": msg_text.TextMsg,
                 'event': msg_event.EventMsg,
+                'voice': msg_voice.VoiceMsg,
             }
             resp_msg = msg_cls[msg_type](msg).handle()
             app.logger.info(resp_msg)
