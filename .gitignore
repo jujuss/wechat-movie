@@ -2,7 +2,9 @@
 *.log
 download
 .idea
+<<<<<<< HEAD
 *.png
 *.jpg
 *idea
 *.swp
+celerybeat*

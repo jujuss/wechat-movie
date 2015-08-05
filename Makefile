@@ -3,20 +3,14 @@ help:
 	@echo '											'
 	@echo 'Usage:									'
 	@echo '   make depend 	install dependencies	'
-	@echo '   make cron 	set up cron				'
 	@echo '   make decrypt	decrypt config'
 	@echo '   make encrypt	encrypt config'
 
 depend:
-	pip install -q -r requirements.txt
-
-cron:
-	sh bin/schedule.sh && crontab ~/.crontab
+	pip install -r requirements.txt
 
 decrypt:
-	ansible-vault decrypt config.py
+	ansible-vault decrypt movie/settings.py
 
 encrypt:
-	ansible-vault encrypt config.py
-	
-Test
+	ansible-vault encrypt movie/settings.py

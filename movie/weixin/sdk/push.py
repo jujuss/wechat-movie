@@ -46,20 +46,22 @@ def gen_push_news():
 
 
 def mget_openid():
-    max_uid = int(rconn.get('uid'))
+    max_uid = rconn.get('uid')
     wx_openids = list()
-    for uid in xrange(1, max_uid + 1):
-        wx_openid = rconn.hget('user:%s' % uid, 'wx_openid')
-        wx_openids.append(wx_openid)
-
+    if max_uid:
+        for uid in xrange(1, int(max_uid) + 1):
+            wx_openid = rconn.hget('user:%s' % uid, 'wx_openid')
+            wx_openids.append(wx_openid)
     return wx_openids
 
 
-def send_job():
+def send_daily_push():
     try:
         access_token = misc.get_access_token()
         news = gen_push_news()
         wx_openids = mget_openid()
+        if len(wx_openids) < 2:
+            return
         logger.info('news: %r', news)
         logger.info('wx_openids: %r', wx_openids)
         resp = curl.post(config.wx_upload_news_uri % access_token, data=news,
