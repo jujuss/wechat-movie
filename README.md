@@ -3,9 +3,7 @@ Movie client based on wechat
 
 # Deploy
 
-1. Install dependencies
-
- `$ cd wechat-movie && make depend`
+fab deploy
 
 
 # Documentation
