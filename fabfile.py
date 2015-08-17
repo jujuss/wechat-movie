@@ -18,6 +18,7 @@ DEPLOY_PARAMS = {
     'virtualenv': '/data/wechat-movie/venv',
     'remote_dir': '/data/wechat-movie',
     'local_dir': os.path.dirname(os.path.realpath(__file__)),
+    'vault_passwd_file': '/data/.ansible/wechat-movie_valut_pass'
 }
 
 
@@ -66,6 +67,10 @@ def _do_depoly(deployment_params):
     _transfer_files(deployment_params['local_dir'],
                     deployment_params['remote_dir'])
     _install_requirements(deployment_params)
+    # decrypt config
+    local('sudo ansible-vault decrypt {0}/movie/settings.py --vault-password-file {1}'.format(
+        deployment_params['remote_dir'], deployment_params['vault_passwd_file']
+        ))
 
 
 def deploy():
