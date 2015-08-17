@@ -54,7 +54,7 @@ def status(services):
 
 def _transfer_files(local_dir, remote_dir):
     # local transfer
-    if notos.path.exists(remote_dir):
+    if not os.path.exists(remote_dir):
         local('sudo cp {0} {1} -R'.format(local_dir, remote_dir))
     else:
         local('sudo cp {0}/* {1}/ -R'.format(local_dir, remote_dir))
