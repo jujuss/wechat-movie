@@ -68,7 +68,7 @@ def _do_depoly(deployment_params):
                     deployment_params['remote_dir'])
     _install_requirements(deployment_params)
     # decrypt config
-    local('sudo ansible-vault decrypt {0}/movie/settings.py --vault-password-file {1}'.format(
+    local('sudo /usr/local/bin/ansible-vault decrypt {0}/movie/settings.py --vault-password-file {1}'.format(
         deployment_params['remote_dir'], deployment_params['vault_passwd_file']
         ))
 
