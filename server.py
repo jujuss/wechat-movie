@@ -2,7 +2,7 @@
 # coding:utf-8
 
 from movie import app
-from movie.config import server_host, server_port
+from movie.settings import server_host, server_port
 
 
 def main():
