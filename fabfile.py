@@ -16,7 +16,7 @@ SERVICES = ['wechat_movie']
 MAIN_PIP_INDEX_URL = 'https://pypi.python.org/simple/'
 DEPLOY_PARAMS = {
     'virtualenv': '/data/wechat-movie/venv',
-    'remote_dir': '/data/wechat-movie/',
+    'remote_dir': '/data/wechat-movie',
     'local_dir': os.path.dirname(os.path.realpath(__file__)),
 }
 
