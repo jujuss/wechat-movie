@@ -1,11 +1,13 @@
 # coding:utf-8
 
-from flask import Flask
+
 import logging
 import logging.handlers
 import redis
 
-import config
+from flask import Flask
+
+from . import settings as config
 
 app = Flask(__name__)
 
@@ -38,4 +40,4 @@ from . import index
 from .weixin import wechat
 from .movie import show, navigate
 
-__all__ = ['index', 'show', 'navigate', 'wechat']
+__all__ = ['index', 'show', 'navigate', 'wechat', 'config']

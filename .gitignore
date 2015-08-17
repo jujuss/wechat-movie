@@ -6,3 +6,4 @@ download
 *.jpg
 *idea
 *.swp
+celerybeat*
