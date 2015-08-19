@@ -43,6 +43,9 @@ def services_refresh(services):
             if 'STOPPED' in status:
                 continue
             local('sudo supervisorctl restart {0}'.format(service))
+            local('sudo supervisorctl restart {0}.celery.beat'.format(service))
+            local('sudo supervisorctl restart {0}.celery.worker'.format(service))
+
 
 def status(services):
     for service in services:
